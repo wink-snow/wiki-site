@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+@plugin 'daisyui';
+
+main {
+  padding: 1rem;
+}
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-left: 5%;
+  color: #47b8ff;
+}
