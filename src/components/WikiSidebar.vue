@@ -1,6 +1,6 @@
 <template>
   <!-- 在 md 及以上屏幕为 block，以下为 hidden (配合JS控制显示) -->
-  <aside class="w-64 bg-slate-800 p-4 flex-shrink-0 hidden md:block">
+  <aside class="w-64 p-4 flex-shrink-0 border-r border-slate-700/80 shadow-lg hidden md:block">
     <div class="mb-6">
       <h2 class="text-xl font-bold text-white">艾尔登法环</h2>
       <p class="text-sm text-slate-400">Wiki 导航</p>
