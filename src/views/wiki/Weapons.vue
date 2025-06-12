@@ -4,9 +4,9 @@
     <h1 class="text-3xl font-bold text-white mb-6">武器列表</h1>
 
     <!-- 2. 使用 prose 来美化内容描述区域 -->
-    <div class="prose prose-invert max-w-none mb-8">
+    <div class="prose prose-invert max-w-none mb-8" >
       <p>
-        这里是《艾尔登法环》中所有武器的详细列表。你可以通过下方的表格查看它们的属性、战技和获取方式。
+        这里是{{ gameId }}中所有武器的详细列表。你可以通过下方的表格查看它们的属性、战技和获取方式。
       </p>
     </div>
 
@@ -35,8 +35,12 @@
   </div>
 </template>
 
-<script setup>
-// 假设的武器数据
+<script setup lang="ts">
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
+
+const route = useRoute();
+const gameId = computed(() => route.params.gameId as string);
 const weapons = [
   { name: '长牙', type: '太刀', damage: '115 (物理)', location: '完成尤拉支线' },
   { name: '暗月大剑', type: '大剑', damage: '112 (魔力)', location: '完成菈妮支线' },

@@ -26,14 +26,12 @@ const routes: Array<RouteRecordRaw> = [
         component: WikiHome,
       },
       {
-        // 示例：武器列表页
         path: 'weapons', // 注意这里是相对路径，最终 URL 是 /wiki/:gameId/weapons
         name: 'WikiWeapons',
         component: Weapons,
       },
     ],
   },
-  // 你可以添加一个404页面
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',

@@ -18,7 +18,7 @@
             <li v-for="item in category.items" :key="item.path">
               <!-- 使用 Vue Router 的 RouterLink 并利用 v-slot 获取激活状态 -->
               <router-link
-                :to="`/wiki/elden-ring${item.path}`"
+                :to="`/wiki/${gameId}${item.path}`"
                 v-slot="{ isActive }"
                 class="flex items-center px-3 py-2 text-sm font-medium rounded-md
                        transition-colors duration-200"
@@ -41,6 +41,10 @@
 </template>
 
 <script setup>
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
+const route = useRoute();
+const gameId = computed(() => route.params.gameId);
 // 导航结构可以从API获取或在本地定义
 const navigation = [
   {
