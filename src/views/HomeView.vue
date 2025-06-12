@@ -19,8 +19,7 @@ import GameCard from '@/components/GameCard.vue';
 
 // TODO: API
 const games = ref([
-  { id: 'elden-ring', name: '艾尔登法环', imageUrl: 'https://photobeds-1318438545.cos.ap-nanjing.myqcloud.com/img/dreamHeart.jpg' },
-  { id: 'cyberpunk-2077', name: '赛博朋克 2077', imageUrl: 'https://photobeds-1318438545.cos.ap-nanjing.myqcloud.com/img/dreamHeart.jpg' },
-  { id: 'zelda-botw', name: '塞尔达传说：旷野之息', imageUrl: 'https://photobeds-1318438545.cos.ap-nanjing.myqcloud.com/img/dreamHeart.jpg' },
+  { id: 'holy-war', name: '代号：咸鱼杯战', status: 'Developing', imageUrl: 'https://photobeds-1318438545.cos.ap-nanjing.myqcloud.com/img/holy-war.png'},
+  { id: 'heros-adventure', name: '大侠立志传：碧血丹心', status: 'Ready-made', imageUrl: 'https://photobeds-1318438545.cos.ap-nanjing.myqcloud.com/img/dxllz-card-img.jpg'},
 ]);
 </script>
