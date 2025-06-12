@@ -1,0 +1,29 @@
+<template>
+  <div class="bg-slate-900 text-slate-300 min-h-screen flex flex-col">
+
+    <div class="flex flex-1">
+      <!-- 
+        将 gameId prop 传递给侧边栏，这样侧边栏就知道
+        要为哪个游戏生成导航链接了。
+      -->
+      <WikiSidebar :game-id="gameId" />
+
+      <!-- 主内容区 -->
+      <main class="flex-1 p-6 md:p-8 overflow-y-auto">
+        <!-- 
+          子路由组件 (WeaponsList, ArmorsList 等) 将在这里被渲染。
+          Vue Router 会自动将子路由的 props (如 gameId) 传递给它们。
+        -->
+        <router-view />
+      </main>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import WikiSidebar from '@/components/WikiSidebar.vue';
+
+defineProps<{
+  gameId: string; // 从路由参数接收 gameId
+}>();
+</script>
