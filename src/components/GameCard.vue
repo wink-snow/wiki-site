@@ -9,7 +9,7 @@
       <!-- 封面图本身，添加 hover 时的放大效果 -->
       <div 
         class="w-full h-full bg-cover bg-center transition-transform duration-300 ease-in-out group-hover:scale-105"
-        :style="{ backgroundImage: `url(${game.imageUrl})` }">
+        :style="{ backgroundImage: `url(${game.image_url})` }">
       </div>
       
       <!-- 状态标签 -->
