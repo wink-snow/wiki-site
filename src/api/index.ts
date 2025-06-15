@@ -44,13 +44,30 @@ export interface GameInfo {
 }
 
 export const fetchGames = async (): Promise<GameInfo[]> => {
-    try {
-        const url = `${API_BASE_URL}/games`;
-        console.log(`正在请求: ${url}`);
-        const response = await axios.get<GameInfo[]>(url);
-        return response.data;
-    } catch (error) {
-        console.error('获取游戏列表失败:', error);
-        throw error;
-    }
+  try {
+      const url = `${API_BASE_URL}/games`;
+      console.log(`正在请求: ${url}`);
+      const response = await axios.get<GameInfo[]>(url);
+      return response.data;
+  } catch (error) {
+      console.error('获取游戏列表失败:', error);
+      throw error;
+  }
+}
+
+export interface GameName {
+  name: string;
+  [key: string]: any;
+}
+
+export const fetchGameNameById = async (gameId: string): Promise<GameName> => {
+  try {
+    const url = `${API_BASE_URL}/games/getGameNameById?gameId=${gameId}`;
+    console.log(`正在请求: ${url}`);
+    const response = await axios.get<GameName>(url);
+    return response.data;
+  } catch (error) {
+    console.error(`获取游戏名称失败 (gameId: ${gameId}):`, error);
+    throw error;
+  }
 }
