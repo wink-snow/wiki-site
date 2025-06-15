@@ -26,10 +26,15 @@ const routes: Array<RouteRecordRaw> = [
         component: WikiHome,
       },
       {
-        path: 'weapons', // 注意这里是相对路径，最终 URL 是 /wiki/:gameId/weapons
-        name: 'WikiWeapons',
-        component: Weapons,
-      },
+        path: 'buffs',
+        name: 'WikiBuffs',
+        component: () => import('@/views/wiki/Buffs.vue'), // 懒加载
+      }
+      // {
+      //   path: 'weapons', // 注意这里是相对路径，最终 URL 是 /wiki/:gameId/weapons
+      //   name: 'WikiWeapons',
+      //   component: Weapons,
+      // },
     ],
   },
   {

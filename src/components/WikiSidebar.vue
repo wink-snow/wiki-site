@@ -52,12 +52,11 @@ const navigation = [
   {
     name: '基础',
     items: [
-      { name: '职业', path: '/classes' },
-      { name: '属性', path: '/stats' },
+      { name: '特征', path: '/buffs'},
     ],
   },
   {
-    name: '装备',
+    name: '装备（测试，无实际路由）',
     items: [
       { name: '武器', path: '/weapons' },
       { name: '护甲', path: '/armors' },

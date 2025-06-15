@@ -2,18 +2,22 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:3000/api/wiki';
 
-// TODO: 返回类型有待更正
+// 返回类型仅显式声明了buffs表中的字段，其他字段不显式声明，但允许存在
 export interface ResourceItem {
   id: number | string; 
+  type: string;
+  buff_id: number | string;
   name: string;
-  [key: string]: any; // 允许有其他任意字段
+  description: string;
+  comment: string;
+  [key: string]: any;
 }
 
 /**
  * 获取指定游戏和资源的列表。
- * @param gameId - 游戏的ID (例如: 'genshin', 'starrail')
- * @param resource - 资源的类型 (例如: 'characters', 'weapons')
- * @returns 返回一个包含资源条目数组的 Promise
+ * @param gameId - 游戏的ID
+ * @param resource - 资源的类型 (例如: 'buffs')
+ * @returns 返回一个包含资源条目数组的 Promise（是 ResourceItem[] 类型）
  * @throws 如果请求失败，会抛出一个错误
  */
 export const fetchResourceList = async (gameId: string, resource: string): Promise<ResourceItem[]> => {
