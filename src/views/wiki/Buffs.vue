@@ -103,7 +103,7 @@
       <button 
         v-if="showScrollToTop"
         @click="scrollToTop"
-        class="fixed bottom-16 right-8 z-50 w-12 h-12 rounded-full bg-sky-600 text-white flex items-center justify-center shadow-lg hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-sky-500 transition-all duration-300"
+        class="fixed bottom-16 right-8 z-50 w-12 h-12 rounded-full bg-indigo-400 text-white flex items-center justify-center shadow-lg hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-sky-500 transition-all duration-300"
         aria-label="回到顶部"
       >
         <!-- 向上箭头 SVG 图标 -->
