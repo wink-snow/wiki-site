@@ -6,7 +6,7 @@
         将 gameId prop 传递给侧边栏，这样侧边栏就知道
         要为哪个游戏生成导航链接了。
       -->
-      <WikiSidebar :game-name="gameName?.name" />
+      <WikiSidebar :game-name="gameName?.name ?? ''" />
 
       <!-- 主内容区 -->
       <main class="flex-1 p-6 md:p-8 overflow-y-auto">

@@ -36,6 +36,54 @@ export const fetchResourceList = async (gameId: string, resource: string): Promi
   }
 };
 
+export interface PaginatedResourceResponse {
+  list: ResourceItem[];
+  total: number;
+}
+
+/**
+ * 获取指定游戏和资源的分页列表。
+ * @param gameId - 游戏的ID。
+ * @param resource - 资源的类型 (例如: 'buffs')。
+ * @param page - 当前请求的页码。
+ * @param pageSize - 每页请求的数量。
+ * @returns 返回一个包含列表和总数的对象的 Promise。
+ * @throws 如果请求失败，会抛出一个错误。
+ */
+export const fetchPaginatedResourceList = async (
+  gameId: string,
+  resource: string,
+  page: number,
+  pageSize: number
+): Promise<PaginatedResourceResponse> => {
+  try {
+    const url = `${API_BASE_URL}/${gameId}/${resource}/paginated`;
+    console.log(`正在请求分页数据: ${url} (Page: ${page}, PageSize: ${pageSize})`);
+
+    const response = await axios.get<{
+      code: number;
+      message: string;
+      data: PaginatedResourceResponse;
+    }>(url, {
+      params: {
+        page,
+        pageSize,
+      },
+    });
+
+    // 根据你后端的返回格式 { code, message, data: { list, total } }
+    if (response.data && response.data.code === 200) {
+      return response.data.data;
+    } else {
+      throw new Error(response.data.message || '获取分页数据失败');
+    }
+
+  } catch (error) {
+    console.error(`获取分页资源列表失败 (game: ${gameId}, resource: ${resource}):`, error);
+    throw error;
+  }
+};
+
 /**
  * 获取所有游戏列表 (调用 /api/wiki/games)
  */
