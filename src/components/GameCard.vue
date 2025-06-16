@@ -51,6 +51,7 @@
 </template>
 
 <script setup>
+import { useNotificationStore } from '@/stores/notification.store';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -62,14 +63,17 @@ const props = defineProps({
 });
 
 const router = useRouter();
-
+const notificationStore = useNotificationStore();
 const isNavigable = computed(() => props.game.status === 'Ready-made');
 
 const handleCardClick = () => {
   if (isNavigable.value) {
     router.push(`/wiki/${props.game.id}`);
   } else {
-    alert(`此项目当前状态为 [${props.game.status}]，暂无法查看详情。`);
+    notificationStore.showNotification(
+      `此项目状态为 [${props.game.status}]，暂未开放`,
+      'error' 
+    );
   }
 };
 
