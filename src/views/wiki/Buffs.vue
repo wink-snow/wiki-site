@@ -8,6 +8,30 @@
       </p>
     </div>
 
+    <!-- 搜索和字段选择控件 -->
+    <div class="mb-6 flex flex-col sm:flex-row gap-4">
+      <!-- 字段选择下拉框 -->
+      <div class="flex-shrink-0">
+        <select 
+          v-model="searchField" 
+          class="w-full sm:w-auto h-11 px-4 bg-slate-700 border border-slate-600 text-white rounded-md focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+        >
+          <option v-for="option in searchOptions" :key="option.value" :value="option.value">
+            {{ option.text }}
+          </option>
+        </select>
+      </div>
+      <!-- 搜索输入框 -->
+      <div class="flex-grow">
+        <input 
+          type="text" 
+          v-model="searchQuery"
+          :placeholder="searchPlaceholder"
+          class="w-full h-11 px-4 bg-slate-700 border border-slate-600 text-white rounded-md placeholder-slate-400 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+        />
+      </div>
+    </div>
+
     <!-- 加载和错误状态提示 -->
     <div v-if="error" class="bg-red-900/50 text-red-300 p-4 rounded-lg mb-4 text-center">
       <p>数据加载失败：{{ error }}</p>
@@ -33,14 +57,14 @@
           </tr>
           
           <!-- 无数据状态 -->
-          <tr v-else-if="!error && buffs.length === 0">
+          <tr v-else-if="!error && paginatedItems.length === 0">
             <td colspan="5" class="p-8 text-center text-slate-400">
               <p>没有找到任何特征。</p>
             </td>
           </tr>
 
           <!-- 数据行渲染 -->
-          <tr v-else v-for="buff in buffs" :key="buff.buff_id" class="hover:bg-slate-700/50 transition-colors duration-150">
+          <tr v-else v-for="buff in paginatedItems" :key="buff.buff_id" class="hover:bg-slate-700/50 transition-colors duration-150">
             <td class="p-4 font-medium text-white">{{ buff.buff_id }}</td>
             <td class="p-4 text-slate-200">{{ buff.name }}</td>
             <td class="p-4 text-slate-300">{{ buff.type }}</td>
@@ -81,7 +105,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { fetchPaginatedResourceList, type ResourceItem } from '../../api/index'; 
+import { fetchPaginatedResourceList, searchInResourceList, type ResourceItem } from '../../api/index'; 
 
 const props = defineProps<{
   gameName: string;
@@ -90,27 +114,53 @@ const props = defineProps<{
 const route = useRoute();
 
 // --- 响应式状态定义 ---
-const buffs = ref<ResourceItem[]>([]); // 表格当前页的数据
+const buffs = ref<ResourceItem[]>([]); 
 const total = ref(0); // 数据总条数
-const currentPage = ref(1); // 当前页码
-const pageSize = ref(20); // 每页显示条数
-const loading = ref(true); // 加载状态
+const currentPage = ref(1);
+const pageSize = ref(10); 
+const loading = ref(true); 
 const error = ref<string | null>(null); // 错误信息
 
-// --- 计算属性 ---
+const searchQuery = ref('');
+const searchField = ref('name');
+const searchOptions = [
+  { value: 'name', text: '名称' },
+  { value: 'type', text: '类型' },
+  { value: 'description', text: '效果' },
+  { value: 'comment', text: '备注' },
+  { value: 'buff_id', text: 'ID' },
+];
+const searchPlaceholder = computed(() => {
+  const selectedOption = searchOptions.find(opt => opt.value === searchField.value);
+  return `在 "${selectedOption?.text}" 中搜索...`;
+});
+
+const isSearching = computed(() => searchQuery.value.trim() !== '');
+
 // 计算总页数
 const totalPages = computed(() => {
   return Math.ceil(total.value / pageSize.value);
 });
 
-// 从路由获取游戏ID
+const paginatedItems = computed(() => {
+  // 如果不是在搜索，直接返回从API获取的当前页数据
+  if (!isSearching.value) {
+    return buffs.value;
+  }
+  
+  // 如果在搜索，对完整的搜索结果 `buffs` 进行客户端分页
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = startIndex + pageSize.value;
+  return buffs.value.slice(startIndex, endIndex);
+});
+
+// 从路由获取ID
 const gameId = computed(() => {
   // 确保 gameId 是字符串
   const id = route.params.gameId;
   return Array.isArray(id) ? id[0] : id;
 });
 
-// --- API 调用逻辑 ---
 const fetchData = async (page: number) => {
   // 校验 gameId 是否存在
   if (!gameId.value) {
@@ -144,14 +194,51 @@ const fetchData = async (page: number) => {
   }
 };
 
+const searchData = async (field: string, keyword: string) => {
+  if (!gameId.value) {
+    error.value = "未能在路由中找到有效的游戏ID。";
+    loading.value = false;
+    return;
+  }
+
+  loading.value = true;
+  error.value = null;
+  try {
+    const responseData = await searchInResourceList(
+      gameId.value,
+      'buffs',
+      field,
+      keyword
+    );
+
+    buffs.value = responseData.list;
+    total.value = responseData.total;
+    currentPage.value = 1; // 搜索后重置到第一页
+
+  } catch (err) {
+    console.error(err);
+    // 将错误对象转换为更友好的字符串
+    error.value = err instanceof Error ? err.message : '一个未知的错误发生了。';
+    buffs.value = [];
+    total.value = 0;
+  } finally {
+    loading.value = false;
+  }
+}
+
 // --- 事件处理器 ---
 const handlePageChange = (newPage: number) => {
   if (newPage > 0 && newPage <= totalPages.value) {
-    fetchData(newPage);
+    // 如果不是在搜索，就从API获取新一页的数据
+    if (!isSearching.value) {
+      fetchData(newPage);
+    } else {
+      // 如果在搜索，只更新当前页码。`paginatedItems` 计算属性会自动更新视图
+      currentPage.value = newPage;
+    }
   }
 };
 
-// --- 生命周期钩子 ---
 // 组件挂载时获取第一页数据
 onMounted(() => {
   fetchData(1);
@@ -161,7 +248,20 @@ onMounted(() => {
 watch(gameId, (newId, oldId) => {
   if (newId && newId !== oldId) {
     console.log(`游戏ID从 ${oldId} 变为 ${newId}，重新加载数据。`);
+    searchQuery.value = '';
     fetchData(1);
+  }
+});
+
+watch([searchQuery, searchField], ([newQuery], [oldQuery]) => {
+  // 仅在查询内容实际变化时触发
+  if (newQuery.trim() !== oldQuery.trim()) { 
+    if (isSearching.value) {
+      searchData(searchField.value, newQuery.trim());
+    } else {
+      // 当搜索框清空时，回到默认的第一页
+      fetchData(1);
+    }
   }
 });
 

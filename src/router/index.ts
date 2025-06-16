@@ -31,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/wiki/Buffs.vue'), // 懒加载
       }
       // {
-      //   path: 'weapons', // 注意这里是相对路径，最终 URL 是 /wiki/:gameId/weapons
+      //   path: 'weapons', // 相对路径，最终 URL 是 /wiki/:gameId/weapons
       //   name: 'WikiWeapons',
       //   component: Weapons,
       // },

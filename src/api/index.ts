@@ -84,6 +84,38 @@ export const fetchPaginatedResourceList = async (
   }
 };
 
+export const searchInResourceList = async (
+  gameId: string,
+  resource: string,
+  field: string,
+  keyword: string
+): Promise<PaginatedResourceResponse> => {
+  try {
+    const url = `${API_BASE_URL}/${gameId}/${resource}/search`;
+    console.log(`正在请求搜索数据: ${url} (Field: ${field}, Keyword: ${keyword})`);
+
+    const response = await axios.get<{
+      code: number;
+      message: string;
+      data: PaginatedResourceResponse;
+    }>(url, {
+      params: {
+        field,
+        keyword,
+      },
+    });
+
+    if (response.data && response.data.code === 200) {
+      return response.data.data;
+    } else {
+      throw new Error(response.data.message || '获取搜索数据失败');
+    }
+  } catch (error) {
+    console.error(`搜索资源列表失败 (game: ${gameId}, resource: ${resource}):`, error);
+    throw error;
+  }
+}
+
 /**
  * 获取所有游戏列表 (调用 /api/wiki/games)
  */

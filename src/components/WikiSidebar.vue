@@ -85,9 +85,8 @@ const navigation = [
   {
     name: '装备（测试，无实际路由）',
     items: [
-      { name: '武器', path: '' },
-      { name: '护甲', path: '' },
-      { name: '护符', path: '' },
+      { name: '武器', path: '/weapons' },
+      { name: '护甲', path: '/armor' },
     ],
   },
 ];
