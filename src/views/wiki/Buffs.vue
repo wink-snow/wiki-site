@@ -99,11 +99,25 @@
       </div>
     </div>
 
+    <Transition name="fade-up">
+      <button 
+        v-if="showScrollToTop"
+        @click="scrollToTop"
+        class="fixed bottom-16 right-8 z-50 w-12 h-12 rounded-full bg-sky-600 text-white flex items-center justify-center shadow-lg hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-sky-500 transition-all duration-300"
+        aria-label="回到顶部"
+      >
+        <!-- 向上箭头 SVG 图标 -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+      </button>
+    </Transition>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { fetchPaginatedResourceList, searchInResourceList, type ResourceItem } from '../../api/index'; 
 
@@ -239,9 +253,30 @@ const handlePageChange = (newPage: number) => {
   }
 };
 
+const showScrollToTop = ref(false);
+
+// 滚动事件处理器
+const handleScroll = () => {
+  // 当页面垂直滚动距离大于 400px 时显示按钮
+  showScrollToTop.value = window.scrollY > 400;
+};
+
+// 点击按钮时，平滑滚动到页面顶部
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+};
+
 // 组件挂载时获取第一页数据
 onMounted(() => {
   fetchData(1);
+  window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
 });
 
 // 监听路由参数变化，如果 gameId 变了，则重新从第一页加载数据
@@ -266,3 +301,16 @@ watch([searchQuery, searchField], ([newQuery], [oldQuery]) => {
 });
 
 </script>
+
+<style scoped>
+.fade-up-enter-active,
+.fade-up-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-up-enter-from,
+.fade-up-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+</style>
