@@ -1,8 +1,13 @@
 <template>
   <!-- 使用 group 来协调内部元素的 hover 状态 -->
-  <router-link :to="`/wiki/${game.id}`" class="group block rounded-lg overflow-hidden shadow-lg 
-              bg-slate-800 transition-all duration-300 ease-in-out
-              hover:shadow-cyan-500/30 hover:-translate-y-1">
+  <div 
+    class="group block rounded-lg overflow-hidden shadow-lg bg-slate-800 transition-all duration-300 ease-in-out"
+    :class="{
+      'hover:shadow-cyan-500/30 hover:-translate-y-1 cursor-pointer': isNavigable,
+      'opacity-60 cursor-not-allowed': !isNavigable
+    }"
+    @click="handleCardClick"
+  >
     
     <!-- 封面图容器，作为定位的相对父级 -->
     <div class="relative w-full h-48 overflow-hidden">
@@ -42,11 +47,12 @@
         {{ game.name }}
       </h3>
     </div>
-  </router-link>
+  </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   game: {
@@ -54,6 +60,18 @@ const props = defineProps({
     required: true,
   },
 });
+
+const router = useRouter();
+
+const isNavigable = computed(() => props.game.status === 'Ready-made');
+
+const handleCardClick = () => {
+  if (isNavigable.value) {
+    router.push(`/wiki/${props.game.id}`);
+  } else {
+    alert(`此项目当前状态为 [${props.game.status}]，暂无法查看详情。`);
+  }
+};
 
 // 使用计算属性来动态生成状态的样式类
 const statusStyles = computed(() => {
