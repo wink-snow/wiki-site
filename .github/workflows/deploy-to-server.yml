@@ -1,16 +1,22 @@
-name: Deploy prod to server
+name: Deploy Prod to Server
 
 on:
-  push:
-    branches:
-      - prod
+  workflow_run:
+    workflows: ["Build and Deploy to Prod Branch"]
+    types:
+      - completed
+    branches: # 仅当 Workflow A 在 main 分支上运行时触发
+      - main
 
 jobs:
   deploy-to-server:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: prod
 
       - name: Install cloudflared
         run: |
