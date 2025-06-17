@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api/wiki';
+// const API_BASE_URL = 'http://localhost:3000/api/wiki';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // 返回类型仅显式声明了buffs表中的字段，其他字段不显式声明，但允许存在
 export interface ResourceItem {
