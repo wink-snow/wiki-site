@@ -88,7 +88,7 @@ const statusStyles = computed(() => {
       };
     case 'Ready-made':
       return {
-        animate: false,
+        animate: true,
         pingClass: 'bg-green-400',
         dotClass: 'bg-green-500',
       };
